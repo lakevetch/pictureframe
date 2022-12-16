@@ -14,66 +14,56 @@ PATH = "C:\\Users\\Jack\\Desktop\\photos"
 LOOPTIME = 30
 
 
-#class Backdrop:
-#    def __init__(self, widths, heights):
-#        self.root = Tk()
-#        self.root.configure(bg="black")
-#        display = ImageTk.PhotoImage(photo)
-#        label = tkinter.Label(image=display)
-#        label.image = display
-#        label.pack()
-        # self.root.attributes("-fullscreen", True)
-#        self.root.after((LOOPTIME + 1) * 1000, lambda: self.root.destroy())
-        #    skip_button = Button(root, text="Skip", command=root.destroy)
-        #    skip_button.pack(side=RIGHT)
+class Backdrop(Tk):
+
+    def __init__(self, photos, files, widths, heights, looptime, path, done):
+        super().__init__()
+        self.configure(bg="black")
+        self.attributes("-fullscreen", True)
+#        if self.__first == True:
+        self.after(1000, lambda: self.display(photos, files, widths, heights, looptime, path, done))
+#        while not self.__first:
+#            self.root.after(looptime * 1000, lambda: self.display_loop(photo, widths, heights, looptime, path, done))
 #        dimensions = str(widths[0]) + "x" + str(heights[0])
 #        self.root.geometry(dimensions)
 #        self.display_loop(photo, widths, heights)
-#        self.root.mainloop()
+        self.mainloop()
 
-#    def display_loop(self, photo, widths, heights):
-#        done = []
-#        end = time.time()
-#        while True:
-#            if time.time() > end:
-#                photos = load_avail_photos()
-#                remove_done(photos, done)
-#                if len(photos) == 0:
-#                    photos = load_avail_photos()
-#                    done.clear()
-#                photo = select_photo(photos, done)
-#                photo = prep_photo(photo, widths, heights)
-#                end = delay()
-#                display = Display(photo, widths, heights, self)
+    def display(self, photos, files, widths, heights, looptime, path, done):
+        t_one = True
+        while t_one:
+            photo = select_photo(photos, files, done, path)
+            display = Display(photo, widths, heights, looptime, self)
+            t_one = display.quit_query()
 
 
-
-class Display:
+class Display(tkinter.Toplevel):
     __continue = True
     __duration = 0
 
-    def __init__(self, photo, widths, heights, looptime):
-        self.__duration = looptime * 1000
-        self.root = Tk()
-        self.root.configure(bg="black")
-        self.root.after(self.__duration, lambda: self.root.destroy())
-        button = Button(self.root, text="STOP", bg="black", fg="white", command=self.quit_show)
-        skip = Button(self.root, text="SKIP PHOTO", bg="black", fg="white", command=self.root.destroy)
+    def __init__(self, photo, widths, heights, looptime, parent):
+        super().__init__(parent)
+        self.__duration = (looptime + 1) * 1000
+        self.configure(bg="black")
+        self.after(self.__duration, lambda: self.destroy())
+        button = Button(self, text="STOP", bg="black", fg="white", command=self.quit_show)
+        skip = Button(self, text="SKIP PHOTO", bg="black", fg="white", command=self.destroy)
         display = ImageTk.PhotoImage(photo)
         label = tkinter.Label(image=display)
         label.image = display
         label.pack(anchor="n")
         button.pack(anchor="s")
         skip.pack(anchor="e")
-        self.root.attributes("-fullscreen", True)
+        self.attributes("-fullscreen", True)
+        self.grab_set()
         #    skip_button = Button(root, text="Skip", command=root.destroy)
         #    skip_button.pack(side=RIGHT)
-        dimensions = str(widths[0]) + "x" + str(heights[0])
-        self.root.geometry(dimensions)
-        self.root.mainloop()
+#        dimensions = str(widths[0]) + "x" + str(heights[0])
+        #self.top.geometry(dimensions)
+        #self.root.mainloop()
 
     def quit_show(self):
-        self.root.destroy()
+        self.destroy()
         self.__continue = False
 
     def quit_query(self):
@@ -95,24 +85,13 @@ def main():
     #    backdrop = Backdrop(widths, heights)
     #    backdrop = create_backdrop()
         if choice == 1:
-            t_one = True
-            while t_one:
-        #        if time.time() > end:
+            photos = load_avail_photos(path)
+            remove_done(photos, done)
+            if len(photos) == 0:
                 photos = load_avail_photos(path)
-                remove_done(photos, done)
-                if len(photos) == 0:
-                    photos = load_avail_photos(path)
-                    done.clear()
-                photo = select_photo(photos, done, path)
-                if type(photo) == type(""):
-                    path = photo
-                    photos = load_avail_photos(path)
-                    done.clear()
-                    photo = select_photo(photos, done, path)
-                photo = prep_photo(photo, widths, heights)
-        #            end = delay()
-                display = Display(photo, widths, heights, looptime)
-                t_one = display.quit_query()
+                done.clear()
+            files = prep_photos(photos, widths, heights, path)
+            Backdrop(photos, files, widths, heights, looptime, path, done)
         if choice == 2:
             looptime = change_freq()
         if choice == 3:
@@ -144,36 +123,35 @@ def load_avail_photos(path):
         return path
 
 
-def select_photo(photos, done, path):
-    try:
-        index = 0
-        index = r.randrange(len(photos))
-        photo = ""
-        photo = Image.open(path + "\\" + photos[index])
+def select_photo(photos, files,  done, path):
+    index = 0
+    index = r.randrange(len(photos))
+    photo = ""
+    photo = files[index]
     #    pickle.dump(photo, open("most_recent", "wb"))
-        done.append(photos[index])
-        return photo
-    except:
-        print()
-        print("Hmm, I've run into a problem.")
-        print("Either the path to your image folder is incorrect,")
-        print("or I can't read one of the files in the folder.")
-        print("Please check that you gave the correct folder. Current path:")
-        print(f"{path}")
-        print("If that is correct, then check the folder for any non-image files\n"
-              "and remove them.")
-        print()
-        print("Then either:")
-        print("1: Enter a new path and I'll try again")
-        print("2: Just have me try it again")
-        choice = ""
-        choice = valid.get_integer("Your choice: ")
-        if choice == 1:
-            path = change_path()
-            return path
-        if choice == 2:
-            photo = select_photo(photos, done, path)
-            return photo
+    done.append(photos[index])
+    return photo
+#    except:
+#        print()
+#        print("Hmm, I've run into a problem.")
+#        print("Either the path to your image folder is incorrect,")
+#        print("or I can't read one of the files in the folder.")
+#        print("Please check that you gave the correct folder. Current path:")
+#        print(f"{path}")
+#        print("If that is correct, then check the folder for any non-image files\n"
+#              "and remove them.")
+#        print()
+#        print("Then either:")
+#        print("1: Enter a new path and I'll try again")
+#        print("2: Just have me try it again")
+#        choice = ""
+#        choice = valid.get_integer("Your choice: ")
+#        if choice == 1:
+#            path = change_path()
+#            return path
+#        if choice == 2:
+#            photo = select_photo(photos, done, path)
+#            return photo
 
 
 def prep_photo(photo, widths, heights):
@@ -198,29 +176,32 @@ def prep_photo(photo, widths, heights):
     return resized
 
 
-#def prep_photos(photos, widths, heights):
-#    resized = []
-#    for photo in photos:
-#        if photo.size[0] > photo.size[1]:
-#            factor_w = widths[0] / photo.size[0]
-#            factor_h = heights[0] / photo.size[1]
-#            if factor_h > factor_w:
-#                factor = factor_w
-#            else:
-#                factor = factor_h
-#        else:
-#            factor = heights[0] / photo.size[1]
-#        new = photo.resize((int((photo.size[0] * factor) // 1), int((photo.size[1] * factor) // 1)))
-#        resized.append(new)
-#        if resized.size[0] > 1000 or resized.size[1] > 563:
-#            diff_w = resized.size[0] - 1000
-#            diff_h = resized.size[1] - 563
-#            if diff_w > diff_h:
-#                factor = resized.size[0] / 1000
-#            else:
-#                factor = resized.size[1] / 563
-#            resized = resized.resize((int((resized.size[0] * factor) // 1), int((resized.size[1] * factor) // 1)))
-#    return resized
+def prep_photos(photos, widths, heights, path):
+    resized = []
+    working = []
+    working = photos
+    for photo in working:
+        photo = Image.open(path + "\\" + photo)
+        if photo.size[0] > photo.size[1]:
+            factor_w = widths[0] / photo.size[0]
+            factor_h = heights[0] / photo.size[1]
+            if factor_h > factor_w:
+                factor = factor_w
+            else:
+                factor = factor_h
+        else:
+            factor = heights[0] / photo.size[1]
+        new = photo.resize((int((photo.size[0] * factor) // 1), int((photo.size[1] * factor) // 1)))
+        if new.size[0] > 1000 or new.size[1] > 563:
+            diff_w = new.size[0] - 1000
+            diff_h = new.size[1] - 563
+            if diff_w > diff_h:
+                factor = new.size[0] / 1000
+            else:
+                factor = new.size[1] / 563
+            new = new.resize((int((new.size[0] * factor) // 1), int((new.size[1] * factor) // 1)))
+        resized.append(new)
+    return resized
 
 
 #def display_photo(photo, widths, heights):
