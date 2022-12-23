@@ -6,13 +6,16 @@ from PIL import Image, ImageTk
 from screeninfo import get_monitors
 import pickle
 import valid as v
+import gc
 
-PATH = "/home/picture/Pictures"
+PATH = "/home/picture/Pictures/2022-Highlights"
 LOOPTIME = 30
 
 class Slideshow(Tk):
     __done = []
     __photo = ""
+    __runs = 0
+    __continue = True
 
     def __init__(self, photo_list, looptime, widths, heights):
         Tk.__init__(self)
@@ -25,9 +28,14 @@ class Slideshow(Tk):
         self.__display.pack(anchor="n")
         self.__quit = tkinter.Button(self, bg="black", fg="white", text="STOP", command=self.quit_show)
         self.__quit.pack(anchor="s")
+        self.__skip = tkinter.Button(self, bg="black", fg="white", text="SKIP", command=self.show_slide)
+        self.__skip.pack(anchor="e")
         dimensions = str(widths[0]) + "x" + str(heights[0])
         self.geometry(dimensions)
         self.attributes("-fullscreen", True)
+    
+    def get_continue(self):
+        return self.__continue
     
     def prep_photo(self, photo):
         """
@@ -46,6 +54,7 @@ class Slideshow(Tk):
         :return: None
         """
         self.destroy()
+        self.__continue = False
         
     def resize_photo(self, photo):
         """
@@ -107,8 +116,11 @@ class Slideshow(Tk):
         img = self.__photo
         self.__display.config(image=img, bg="black")
         self.after(self.__delay, self.show_slide)
-        self.__skip = tkinter.Button(self, bg="black", fg="white", text="SKIP", command=self.show_slide)
-        self.__skip.pack(anchor="e")    
+        self.__runs += 1
+        print(self.__runs)
+        #print(dir())
+        #if self.__runs == 20:
+        #    self.destroy()
         
 
 def main():
@@ -127,10 +139,13 @@ def main():
         if choice == 1:
             filename_list = load_avail_photos(path)
             photo_list = open_photos(filename_list, path)
-            #if type(photo_list) == type("")
-            show = Slideshow(photo_list, looptime, widths, heights)
-            show.show_slide()
-            show.run()
+            t_one = True
+            while t_one:
+                #if type(photo_list) == type("")
+                show = Slideshow(photo_list, looptime, widths, heights)
+                show.show_slide()
+                show.run()
+                t_one = show.get_continue()
         elif choice == 2:
             looptime = change_freq()
             save_option(looptime, "looptime")
@@ -141,7 +156,7 @@ def main():
                 save_option(path, "path")
         elif choice == 4:
             t_main = False
-        runs += 1
+        runs = 1
 
 
 def change_freq():
