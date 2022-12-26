@@ -6,22 +6,21 @@ from PIL import Image, ImageTk
 from screeninfo import get_monitors
 import pickle
 import valid as v
-import gc
 
-PATH = "/home/picture/Pictures/2022-Highlights"
-LOOPTIME = 30
+PATH = "C:\\Users\\Jack\\Desktop\\2022Highlights\\2022-Highlights"
+LOOPTIME = 20
 
 class Slideshow(Tk):
     __done = []
     __photo = ""
-    __runs = 0
-    __continue = True
+    __delay = 0
 
-    def __init__(self, photo_list, looptime, widths, heights):
+    def __init__(self, path, filename_list, looptime, widths, heights):
         Tk.__init__(self)
         self.configure(bg="black")
+        self.__filename_list = filename_list
+        self.__path = path
         self.__delay = looptime * 1000
-        self.__photo_list = photo_list
         self.__widths = widths
         self.__heights = heights
         self.__display = tkinter.Label(self, bg="black", image=None)
@@ -33,10 +32,21 @@ class Slideshow(Tk):
         dimensions = str(widths[0]) + "x" + str(heights[0])
         self.geometry(dimensions)
         self.attributes("-fullscreen", True)
-    
-    def get_continue(self):
-        return self.__continue
-    
+
+    def open_photo(self, filename):
+        """
+        Opens the selected filename as a Image object
+        :param filename: string, name of image file to open
+        :return: Image object
+        """
+        try:
+            photo = Image.open(self.__path + "\\" + filename)
+            return photo
+        except:
+            print("Error reading file. Try updating path or checking the folder for non-image files.")
+            print(f"Folder located at: {self.__path}")
+            self.quit_show()
+
     def prep_photo(self, photo):
         """
         Readies the selected photo for display and stores it as a field of the
@@ -44,7 +54,10 @@ class Slideshow(Tk):
         :param photo: Image class object from PIL
         :return: None
         """
-        img = self.resize_photo(photo)
+        img = ""
+        self.__photo = None
+        img = self.open_photo(photo)
+        img = self.size_photo(img)
         img = ImageTk.PhotoImage(img)
         self.__photo = img
     
@@ -56,7 +69,7 @@ class Slideshow(Tk):
         self.destroy()
         self.__continue = False
         
-    def resize_photo(self, photo):
+    def size_photo(self, photo):
         """
         Uses attributes of the screen being used to resize image files to
         nearly fill the screen.
@@ -71,7 +84,7 @@ class Slideshow(Tk):
             else:
                 factor = factor_h
         else:
-            factor = (self.__heights[0] - self.__heights[0] / 30) / photo.size[1]
+            factor = (self.__heights[0] - self.__heights[0] / 20) / photo.size[1]
         resized = photo.resize((int((photo.size[0] * factor) // 1), int((photo.size[1] * factor) // 1)))
         return resized
         
@@ -90,17 +103,17 @@ class Slideshow(Tk):
         :return: Image class object chosen from list of available objects
         """
         index = 0
-        index = r.randrange(len(self.__photo_list))
-        if 0 < len(self.__done) < len(self.__photo_list):
+        index = r.randrange(len(self.__filename_list))
+        if 0 < len(self.__done) < len(self.__filename_list):
             while index in self.__done:
-                index = r.randrange(len(self.__photo_list))
+                index = r.randrange(len(self.__filename_list))
             self.__done.append(index)
-        elif len(self.__done) == len(self.__photo_list):
+        elif len(self.__done) == len(self.__filename_list):
             self.__done.clear()
             self.__done.append(index)
         else:
             self.__done.append(index)
-        photo = self.__photo_list[index]
+        photo = self.__filename_list[index]
         return photo
     
     def show_slide(self):
@@ -111,17 +124,15 @@ class Slideshow(Tk):
         the next run of the function.
         :return: None
         """
-        photo = self.select_photo()
-        self.prep_photo(photo)
-        img = self.__photo
-        self.__display.config(image=img, bg="black")
-        self.after(self.__delay, self.show_slide)
-        self.__runs += 1
-        print(self.__runs)
-        #print(dir())
-        #if self.__runs == 20:
-        #    self.destroy()
-        
+        try:
+            filename = self.select_photo()
+            self.prep_photo(filename)
+            img = self.__photo
+            self.__display.config(image=img, bg="black")
+            self.after(self.__delay, self.show_slide)
+        except:
+            self.quit_show()
+
 
 def main():
     widths = []
@@ -138,14 +149,9 @@ def main():
             choice = main_menu()
         if choice == 1:
             filename_list = load_avail_photos(path)
-            photo_list = open_photos(filename_list, path)
-            t_one = True
-            while t_one:
-                #if type(photo_list) == type("")
-                show = Slideshow(photo_list, looptime, widths, heights)
-                show.show_slide()
-                show.run()
-                t_one = show.get_continue()
+            show = Slideshow(path, filename_list, looptime, widths, heights)
+            show.show_slide()
+            show.run()
         elif choice == 2:
             looptime = change_freq()
             save_option(looptime, "looptime")
@@ -237,44 +243,6 @@ def main_menu():
     while not choice in range(1, 5):
         choice = v.get_integer("Please enter a menu option: ")
     return choice
-
-
-def open_photos(filename_list, path):
-    """
-    Takes the list of filenames at path and populates a new list of PIL Image
-    objects for each filename in list.
-    :param filename_list: list of string filenames from the directory
-    :param path: string, path to the directory
-    :return: list of Image objects
-    """
-    photo_list = []
-    try:
-        for filename in filename_list:
-            photo = Image.open(path + "/" + filename)
-            photo_list.append(photo)
-        return photo_list
-    except:
-        print("please update path")
-#        print()
-#        print("Hmm, I've run into a problem.")
-#        print("Either the path to your image folder is incorrect,")
-#        print("or I can't read one of the files in the folder.")
-#        print("Please check that you gave the correct folder. Current path:")
-#        print(f"{path}")
-#        print("If that is correct, then check the folder for any non-image\n"
-#              "files and remove them.")
-#        print()
-#        print("Then either:")
-#        print("1: Enter a new path and I'll try again")
-#        print("2: Just have me try it again")
-#        choice = ""
-#        choice = v.get_integer("Your choice: ")
-#        if choice == 1:
-#            path = change_path()
-#            return path
-#        if choice == 2:
-#            photo = select_photo(photos, done, path)
-#            return photo
 
 
 def save_option(option, name):
