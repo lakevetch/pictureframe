@@ -84,7 +84,7 @@ class Slideshow(Tk):
             else:
                 factor = factor_h
         else:
-            factor = (self.__heights[0] - self.__heights[0] / 30) / photo.size[1]
+            factor = (self.__heights[0] - self.__heights[0] / 20) / photo.size[1]
         resized = photo.resize((int((photo.size[0] * factor) // 1), int((photo.size[1] * factor) // 1)))
         return resized
         
