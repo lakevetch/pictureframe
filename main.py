@@ -8,12 +8,13 @@ import pickle
 import valid as v
 
 PATH = "C:\\Users\\Jack\\Desktop\\2022Highlights\\2022-Highlights"
-LOOPTIME = 20
+LOOPTIME = 30
 
 class Slideshow(Tk):
     __done = []
     __photo = ""
     __delay = 0
+    __callback = 0
 
     def __init__(self, path, filename_list, looptime, widths, heights):
         Tk.__init__(self)
@@ -27,7 +28,7 @@ class Slideshow(Tk):
         self.__display.pack(anchor="n")
         self.__quit = tkinter.Button(self, bg="black", fg="white", text="STOP", command=self.quit_show)
         self.__quit.pack(anchor="s")
-        self.__skip = tkinter.Button(self, bg="black", fg="white", text="SKIP", command=self.show_slide)
+        self.__skip = tkinter.Button(self, bg="black", fg="white", text="SKIP", command=self.skip)
         self.__skip.pack(anchor="e")
         dimensions = str(widths[0]) + "x" + str(heights[0])
         self.geometry(dimensions)
@@ -115,7 +116,7 @@ class Slideshow(Tk):
             self.__done.append(index)
         photo = self.__filename_list[index]
         return photo
-    
+
     def show_slide(self):
         """
         Main control for slideshow. Calls all preparatory functions, prepares
@@ -129,10 +130,13 @@ class Slideshow(Tk):
             self.prep_photo(filename)
             img = self.__photo
             self.__display.config(image=img, bg="black")
-            self.after(self.__delay, self.show_slide)
+            self.__callback = self.after(self.__delay, self.show_slide)
         except:
             self.quit_show()
 
+    def skip(self):
+        self.after_cancel(self.__callback)
+        self.show_slide()
 
 def main():
     widths = []
