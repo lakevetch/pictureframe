@@ -67,6 +67,7 @@ class Slideshow(Tk):
         Quits show by destroying the tkinter window. Program goes to menu.
         :return: None
         """
+        self.after_cancel(self.__callback)
         self.destroy()
         self.__continue = False
         
