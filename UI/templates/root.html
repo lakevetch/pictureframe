@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Slideshow{% endblock %}</title>
+    <link rel="stylesheet" href="{% block stylesheet %}{{ url_for('static', filename='styles.css') }}{% endblock %}">
+    {% block script %}
+        <script src="{{ url_for('static', filename='scripts/Slideshow.js') }}"></script>
+        <script src="{{ url_for('static', filename='scripts/Root.js') }}"></script>
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    {{ json_uris }}
+    <input id="metadata" type="hidden" value="{{ metadata }}">
+    <input id="timeout-sec" type="hidden" value="{{ timeout_sec }}">
+    <img id="slide" src="">
+    <div class="control-panel arrow" id="skip"> > </div>
+    <div class="control-panel arrow" id="back"> < </div>
+    <div class="control-panel" id="settings">Settings</div>
+{% endblock %}
+</body>
+</html>

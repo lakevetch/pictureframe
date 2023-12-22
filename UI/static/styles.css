@@ -1,0 +1,53 @@
+html, body {
+    background-color: black;
+    height: 100%;
+    margin: 0;
+    font-family: Arial;
+}
+body {
+    margin: auto;
+    text-align: center;
+}
+img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    margin: auto;
+ }
+.control-panel {
+    background-color: white;
+    display: none;
+    opacity: 66%;
+    color: black;
+    font-weight: bold;
+    font-size: 5em;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+.arrow {
+    font-size: 10em;
+    position: absolute;
+    top: 0;
+    width: 14%;
+    height: 100%;
+}
+.clicked {
+    background-color: gray;
+    opacity: 100%;
+}
+#skip {
+    right: 0;
+}
+#back {
+    left: 0;
+}
+#settings {
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    width: 70%;
+    height: 15%;
+    border-radius: 15px;
+}
