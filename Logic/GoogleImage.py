@@ -11,7 +11,7 @@ class GoogleImage:
     __id = None
     __name = None
     __mime_type = None
-    __content_uri = None
+    __download_uri = None
     __width = None
     __height = None
     __orientation = None
@@ -24,7 +24,7 @@ class GoogleImage:
         self.__id = drive_id
         self.__name = name
         self.__mime_type = mime_type
-        self.__content_uri = uri
+        self.__download_uri = uri
         self.__width = metadata_dict['width']
         self.__height = metadata_dict['height']
         if self.__width > self.__height:
@@ -50,8 +50,8 @@ class GoogleImage:
     def get_mime_type(self):
         return self.__mime_type
 
-    def get_uri(self):
-        return self.__content_uri
+    def get_download_uri(self):
+        return self.__download_uri
 
     def get_width(self):
         return self.__width
@@ -79,7 +79,7 @@ class GoogleImage:
         self.__mime_type = mime_type
 
     def set_uri(self, uri):
-        self.__content_uri = uri
+        self.__download_uri = uri
 
     def set_width(self, width):
         self.__width = int(width)
@@ -100,7 +100,7 @@ class GoogleImage:
                  f'  Id: {self.__id}\n'\
                  f'  Name: {self.__name}\n' \
                  f'  Mime type: {self.__mime_type}\n'\
-                 f'  Download link: {self.__content_uri}\n'
+                 f'  Download link: {self.__download_uri}\n'
         return string
 
     def __eq__(self, other):
@@ -126,7 +126,7 @@ class GoogleImage:
     def download(self):
         register_heif_opener()
         os.chdir(self.__path_const.get_img_passthru())
-        r = requests.get(self.__content_uri)
+        r = requests.get(self.__download_uri)
         if r:
             file = open(self.__name, 'wb')
             file.write(r.content)
@@ -150,6 +150,7 @@ class GoogleImage:
         if self.__name not in tuple(img.get_name() for img in ImageList.fetch_jpegs()):
             self.upload()
         self.delete_locally()
+        self.delete_from_drive()
 
     def to_dict(self):
         return {
@@ -157,6 +158,9 @@ class GoogleImage:
             'name': self.__name,
             'mimeType': self.__mime_type
         }
+
+    def gen_view_uri(self):
+        return f'https://lh3.google.com/u/0/d/{self.__id}'
 
 
 if __name__ == '__main__':

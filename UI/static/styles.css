@@ -34,7 +34,6 @@ img {
     height: 100%;
 }
 .clicked {
-    background-color: gray;
     opacity: 100%;
 }
 #skip {

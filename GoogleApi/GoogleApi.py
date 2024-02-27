@@ -17,6 +17,7 @@ class GoogleApi:
     __files = None
     __path_constants = None
     __fields = 'id', 'name', 'mimeType', 'webContentLink', 'imageMediaMetadata', 'md5Checksum'
+    __headers = 'sec-fetch-mode: no-cors'
 
     @classmethod
     def connect(cls):
@@ -40,16 +41,25 @@ class GoogleApi:
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
+                try:
+                    creds.refresh(Request())
+                except:
+                    os.remove('token.pickle')
+                    creds = cls.signin_flow()
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    cls.__path_constants.get_oauth(), SCOPES)
-                creds = flow.run_local_server(port=0)
+                creds = cls.signin_flow()
             # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:
                 pickle.dump(creds, token)
         # return Google Drive API service
         return build('drive', 'v3', credentials=creds)
+
+    @classmethod
+    def signin_flow(cls):
+        flow = InstalledAppFlow.from_client_secrets_file(
+            cls.__path_constants.get_oauth(), SCOPES)
+        creds = flow.run_local_server(port=0)
+        return creds
 
     @classmethod
     def list_files(cls, query_str='', fields=None):
@@ -98,6 +108,18 @@ class GoogleApi:
             return tuples
 
     @classmethod
+    def get_all_nonjpegs(cls):
+        cls.connect()
+        request = cls.__files.list(fields='*', q=f"'{FOLDER_ID}' in parents and mimeType!='image/jpeg'")
+        response = request.execute()
+        if response:
+            tuples = []
+            for item in response['files']:
+                file_tuple = tuple(item[field] for field in cls.__fields)
+                tuples.append(file_tuple)
+            return tuples
+
+    @classmethod
     def delete_img(cls, img_id):
         cls.connect()
         request = cls.__files.delete(fileId=str(img_id))
@@ -116,8 +138,5 @@ class GoogleApi:
 
 
 if __name__ == '__main__':
-    # print(GoogleApi.list_files())
-    # print(GoogleApi.get_file_by_id('1XqdKe-keuwZ0LTJxLMlfQFRaI7SOCyxG'))
-    GoogleApi.list_files(query_str=f"'{FOLDER_ID}' in parents", fields='*')
-    # for item in GoogleApi.get_file_by_id('1O86hK4up3I1yZMmeCwRGSKX7at3vNDkI'):
-    #     print(item)
+    for img in GoogleApi.get_all_nonjpegs():
+        print('\n', img)

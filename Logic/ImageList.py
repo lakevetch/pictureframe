@@ -31,7 +31,16 @@ class ImageList:
                 imgs.append(GoogleImage(*t))
             return cls(*imgs)
 
-# make iterable
+    @classmethod
+    def fetch_non_jpegs(cls):
+        non_jpegs = GoogleApi.get_all_nonjpegs()
+        imgs = []
+        if non_jpegs:
+            for t in non_jpegs:
+                imgs.append(GoogleImage(*t))
+            return cls(*imgs)
+
+    # make iterable
     def __iter__(self):
         return self
 
@@ -63,10 +72,13 @@ class ImageList:
         self.__list = list(iterable)
 
 # utils
-    def get_json_uris(self):
+    def get_json_uris(self, uri_type):
         uris = []
         for img in self:
-            uris.append(img.get_uri())
+            if uri_type == 'view':
+                uris.append(img.gen_view_uri())
+            elif uri_type == 'download':
+                uris.append(img.get_download_uri())
         return json.dumps(uris)
 
     def convert_all(self):

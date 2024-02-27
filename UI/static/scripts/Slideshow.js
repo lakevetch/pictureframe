@@ -6,9 +6,14 @@ function Slideshow(metadata, imgId, timeoutSec) {
     this.index = 0;
     this.intervalID = null;
 
-    this.play = function () {
+    this.show_slide = function () {
         let img = document.getElementById(this.imgId);
         img.src = this.metadata[this.index][0];
+        console.log(img.src);
+    };
+
+    this.play = function () {
+        this.show_slide();
         this.intervalID = setInterval(this.next_slide.bind(this), this.timeout);
     };
 
@@ -17,8 +22,7 @@ function Slideshow(metadata, imgId, timeoutSec) {
         if (this.index  === this.length) {
             this.index = 0;
         }
-        let img = document.getElementById(this.imgId);
-        img.src = this.metadata[this.index][0];
+        this.show_slide();
     };
 
     this.stop = function () {
@@ -28,6 +32,9 @@ function Slideshow(metadata, imgId, timeoutSec) {
     this.skip = function () {
         this.stop();
         this.index += 1;
+        if (this.index === this.length) {
+            this.index = 0;
+        }
         this.play();
         console.log('Skip');
     }
@@ -35,6 +42,9 @@ function Slideshow(metadata, imgId, timeoutSec) {
     this.back = function () {
         this.stop();
         this.index -= 1;
+        if (this.index < 0) {
+            this.index = this.index + this.length;
+        }
         this.play();
         console.log('Back');
     }

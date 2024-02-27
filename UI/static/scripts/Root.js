@@ -35,15 +35,12 @@ function Root() {
     this.showControls = function () {
         for (let i = 0; i < this.controls.length; i++) {
             let elem = this.controls.item(i);
-            window.addEventListener('click', () => {
-                elem.classList.remove('clicked');
-                if (elem.style.display === 'none') {
-                    elem.style.display ='flex';
-                    let timeout = setTimeout(() => {
-                        elem.style.display = 'none';
-                    }, 4000);
-                } else {
+            window.addEventListener('dblclick', () => {
+                if (elem.style.display === 'flex') {
                     elem.style.display = 'none';
+                } else {
+                    elem.style.display = 'flex';
+                    elem.classList.remove('clicked');
                 }
             });
         }
@@ -51,9 +48,25 @@ function Root() {
 
     this.setupControls = function () {
         let slideshow = this.slideshow;
-        this.skip.addEventListener('click', slideshow.skip.bind(slideshow));
-        this.back.addEventListener('click', slideshow.back.bind(slideshow));
-        this.settings.addEventListener('click', () => {
+        let skip = this.skip;
+        let back = this.back;
+        let settings = this.settings;
+        skip.addEventListener('click', () => {
+            skip.classList.add('clicked');
+            back.classList.remove('clicked');
+            settings.classList.remove('clicked');
+            slideshow.skip.bind(slideshow).call();
+        });
+        back.addEventListener('click', () => {
+            skip.classList.remove('clicked');
+            back.classList.add('clicked');
+            settings.classList.remove('clicked');
+            slideshow.back.bind(slideshow).call();
+        });
+        settings.addEventListener('click', () => {
+            skip.classList.remove('clicked');
+            back.classList.remove('clicked');
+            settings.classList.add('clicked');
             window.location = '/settings';
         });
     }
