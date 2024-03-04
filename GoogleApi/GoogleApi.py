@@ -21,7 +21,7 @@ class GoogleApi:
     @classmethod
     def connect(cls):
         if not cls.__path_constants:
-            cls.__path_constants = Project('C:/Users/Jack/Desktop/pythonsketchbook/pictureframe/pictureframe')
+            cls.__path_constants = Project()
         if not cls.__service:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()

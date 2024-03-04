@@ -7,7 +7,7 @@ class Project:
     __IMG_PASSTHRU_PATH = None
     __STATIC_PATH = None
 
-    def __init__(self, root_pathname):
+    def __init__(self, root_pathname='C:/Users/Jack/Desktop/pythonsketchbook/pictureframe/pictureframe'):
         self.__ROOT_PATH = Path(root_pathname)
         self.__STATIC_PATH = self.__ROOT_PATH / 'static'
         self.__OAUTH_PATH = self.__STATIC_PATH / 'credentials.json'

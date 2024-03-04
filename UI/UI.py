@@ -51,7 +51,7 @@ class UI:
 
     @classmethod
     def run(cls):
-        cls.path_constants = Project('C:/Users/Jack/Desktop/pythonsketchbook/pictureframe/pictureframe')
+        cls.path_constants = Project()
         cls.load_timeout_sec()
         cls.app.run()
 
