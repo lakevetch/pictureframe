@@ -3,7 +3,6 @@ import os
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from pathlib import Path
 from Logic.Project import Project
 
 # If modifying these scopes, delete the file token.pickle.
@@ -85,32 +84,20 @@ class GoogleApi:
 
     @classmethod
     def get_all_imgs(cls):
-        cls.connect()
-        request = cls.__files.list(fields='*', q=f"'{FOLDER_ID}' in parents")
-        response = request.execute()
-        if response:
-            tuples = []
-            for item in response['files']:
-                file_tuple = tuple(item[field] for field in cls.__fields)
-                tuples.append(file_tuple)
-            return tuples
+        return cls.get_imgs(f"'{FOLDER_ID}' in parents")
 
     @classmethod
     def get_all_jpegs(cls):
-        cls.connect()
-        request = cls.__files.list(fields='*', q=f"'{FOLDER_ID}' in parents and mimeType='image/jpeg'")
-        response = request.execute()
-        if response:
-            tuples = []
-            for item in response['files']:
-                file_tuple = tuple(item[field] for field in cls.__fields)
-                tuples.append(file_tuple)
-            return tuples
+        return cls.get_imgs(f"'{FOLDER_ID}' in parents and mimeType='image/jpeg'")
 
     @classmethod
     def get_all_nonjpegs(cls):
+        return cls.get_imgs(f"'{FOLDER_ID}' in parents and mimeType!='image/jpeg'")
+
+    @classmethod
+    def get_imgs(cls, body):
         cls.connect()
-        request = cls.__files.list(fields='*', q=f"'{FOLDER_ID}' in parents and mimeType!='image/jpeg'")
+        request = cls.__files.list(fields='*', q=body)
         response = request.execute()
         if response:
             tuples = []
@@ -134,9 +121,8 @@ class GoogleApi:
         cls.connect()
         body['parents'] = [f'{FOLDER_ID}']
         request = cls.__files.create(uploadType='media', media_body=img, body=body)
-        response = request.execute()
+        request.execute()
 
 
 if __name__ == '__main__':
-    for img in GoogleApi.get_all_nonjpegs():
-        print('\n', img)
+    pass
