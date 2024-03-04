@@ -50,3 +50,10 @@ img {
     height: 15%;
     border-radius: 15px;
 }
+.setting-page {
+    display: inline-block;
+    margin: auto;
+    color: white;
+    align-items: center;
+    justify-content: center;
+}

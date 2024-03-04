@@ -21,7 +21,7 @@ class GoogleApi:
     @classmethod
     def connect(cls):
         if not cls.__path_constants:
-            cls.__path_constants = Project('C:/Users/Jack/Desktop/pythonsketchbook/pictureframe')
+            cls.__path_constants = Project('C:/Users/Jack/Desktop/pythonsketchbook/pictureframe/pictureframe')
         if not cls.__service:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()
@@ -40,11 +40,11 @@ class GoogleApi:
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                try:
-                    creds.refresh(Request())
-                except:
-                    os.remove('token.pickle')
-                    creds = cls.signin_flow()
+                # try:
+                creds.refresh(Request())
+                # except:
+                #     os.remove('token.pickle')
+                #     creds = cls.signin_flow()
             else:
                 creds = cls.signin_flow()
             # Save the credentials for the next run

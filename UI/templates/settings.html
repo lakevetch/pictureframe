@@ -1,3 +1,15 @@
 {% extends 'root.html' %}
 {% block title %}Settings{% endblock %}
-{% block content %}{% endblock %}
+{% block content %}
+    <div class="setting-page">
+        <h1>Settings</h1>
+        <h3>Currently changing slide after: {{ timeout_sec }}</h3>
+        <form action="/settings-confirm" method="POST">
+            <label>
+                Set slide-change time to:
+                <input type="number" id="timeout-sec" name="timeout-sec">
+            </label>
+            <button type="submit">DONE</button>
+        </form>
+    </div>
+{% endblock %}
