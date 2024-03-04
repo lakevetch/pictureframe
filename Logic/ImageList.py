@@ -1,11 +1,13 @@
 from GoogleApi.GoogleApi import GoogleApi
 from Logic.GoogleImage import GoogleImage
 import json
+import random
 
 
 class ImageList:
     __list = None
     __index = -1
+    __focus = None
 
 # constructors
     def __init__(self, *images):
@@ -67,9 +69,15 @@ class ImageList:
     def get_list(self):
         return list(self.__list)
 
+    def get_focus(self):
+        return self.__focus
+
 # mutators
     def set_list(self, iterable):
         self.__list = list(iterable)
+
+    def set_focus(self, focus):
+        self.__focus = focus
 
 # utils
     def get_json_uris(self, uri_type):
@@ -98,8 +106,12 @@ class ImageList:
             orientations.append(img.get_orientation())
         return orientations
 
+    def random_focus(self):
+        self.__focus = self.__list.index(random.choice(self.__list))
+
 
 # debug/test block
 if __name__ == '__main__':
-    for img in ImageList.fetch_jpegs():
-        print(img.get_name())
+    img_list = ImageList.fetch_jpegs()
+    img_list.random_focus()
+    print(img_list.get_focus())

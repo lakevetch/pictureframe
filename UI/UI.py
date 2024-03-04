@@ -10,6 +10,7 @@ class UI:
     app = Flask(__name__)
     path_constants = None
     timeout_sec = 15
+    focus = None
 
     @staticmethod
     @app.route('/')
@@ -18,16 +19,25 @@ class UI:
         if non_jpegs:
             non_jpegs.convert_all()
         img_list = ImageList.fetch_jpegs()
+        if UI.focus:
+            img_list.set_focus(UI.focus)
+        if not img_list.get_focus():
+            img_list.random_focus()
         uris = list(img.gen_view_uri() for img in img_list)
         orientations = img_list.get_orientations()
         metadata = list((uris[i], orientations[i]) for i in range(len(img_list)))
         json_metadata = json.dumps(metadata)
         timeout_sec = UI.timeout_sec
-        return render_template('root.html', metadata=json_metadata, timeout_sec=timeout_sec)
+        return render_template(
+            'root.html', metadata=json_metadata, timeout_sec=timeout_sec, focus=img_list.get_focus()
+        )
 
     @staticmethod
     @app.route('/settings')
     def settings():
+        if 'focus' in request.args:
+            focus = request.args.get('focus')
+            UI.focus = focus
         timeout_sec = UI.timeout_sec
         return render_template('settings.html', timeout_sec=timeout_sec)
 

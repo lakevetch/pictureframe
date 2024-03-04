@@ -3,6 +3,8 @@ function Root() {
     this.body = document.getElementsByName('body').item(0);
     this.metadata = document.getElementById('metadata');
     this.timeoutSec = document.getElementById('timeout-sec');
+    this.focus = document.getElementById('focus');
+    this.focusForm = document.getElementById('focus-form');
     this.img = document.getElementById('slide');
     this.controls = document.getElementsByClassName('control-panel');
     this.back = document.getElementById('back');
@@ -21,7 +23,8 @@ function Root() {
     this.setupSlideshow = function () {
         let metadata = JSON.parse(this.metadata.value);
         let timeoutSec = this.timeoutSec.value;
-        return new Slideshow(metadata, 'slide', timeoutSec);
+        let focusId = this.focus.id;
+        return new Slideshow(metadata, 'slide', timeoutSec, focusId);
     };
 
     this.startSlideshow = function () {
@@ -67,7 +70,7 @@ function Root() {
             skip.classList.remove('clicked');
             back.classList.remove('clicked');
             settings.classList.add('clicked');
-            window.location = '/settings';
+            this.focusForm.submit();
         });
     }
 }
