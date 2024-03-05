@@ -117,7 +117,7 @@ class ImageList:
         return orientations
 
     def random_focus(self):
-        self.__focus = self.__list.index(random.choice(self.__list))
+        self.__focus = random.randrange(len(self.__list))
 
 
 # debug/test block

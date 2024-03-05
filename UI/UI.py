@@ -25,8 +25,7 @@ class UI:
             UI.init_imgs()
         img_list = UI.img_list
         if img_list.get_focus() is None:
-            # img_list.random_focus() # may be unnecessarily resource-hungry, checking equality for each list item
-            img_list.set_focus(3)
+            img_list.random_focus()
         focus = img_list.get_focus()
         display_list = img_list.return_slice(focus, focus + 5)
         uris = list(img.gen_view_uri() for img in display_list)
