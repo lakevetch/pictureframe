@@ -1,17 +1,16 @@
-function Slideshow(metadata, imgId, timeoutSec, focusId) {
+function Slideshow(metadata, imgId, timeoutSec, focusId, focusForm) {
     this.metadata = metadata;
     this.length = this.metadata.length;
     this.imgId = imgId;
     this.timeout = timeoutSec * 1000;
     this.focusId = focusId;
+    this.focusForm = focusForm;
     this.index = 0;
     this.intervalID = null;
 
     this.show_slide = function () {
         let img = document.getElementById(this.imgId);
         img.src = this.metadata[this.index][0];
-        let focus = document.getElementById(this.focusId);
-        focus.value = this.index;
         console.log(img.src);
     };
 
@@ -23,7 +22,7 @@ function Slideshow(metadata, imgId, timeoutSec, focusId) {
     this.next_slide = function () {
         this.index += 1;
         if (this.index  === this.length) {
-            this.index = 0;
+            this.to_root();
         }
         this.show_slide();
     };
@@ -36,26 +35,31 @@ function Slideshow(metadata, imgId, timeoutSec, focusId) {
         this.stop();
         this.index += 1;
         if (this.index === this.length) {
-            this.index = 0;
+            this.to_root();
         }
         this.play();
         console.log('Skip');
-    }
+    };
 
     this.back = function () {
         this.stop();
         this.index -= 1;
         if (this.index < 0) {
-            this.index = this.index + this.length;
+            this.to_root();
         }
         this.play();
         console.log('Back');
-    }
+    };
+
+    this.to_root = function() {
+        let focus = document.getElementById(this.focusId);
+        let focusVal = parseInt(focus.value);
+        focusVal += this.index;
+        focus.value = focusVal;
+        window.location = '/?focus=' + focusVal.toString();
+    };
 
     this.init = function () {
-        // let focus = document.getElementById(this.focusId);
-        // this.index = parseInt(focus.value);
-        console.log(this);
         this.play();
     };
 }

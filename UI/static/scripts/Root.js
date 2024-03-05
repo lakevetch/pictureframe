@@ -24,7 +24,8 @@ function Root() {
         let metadata = JSON.parse(this.metadata.value);
         let timeoutSec = this.timeoutSec.value;
         let focusId = this.focus.id;
-        return new Slideshow(metadata, 'slide', timeoutSec, focusId);
+        let focusForm = this.focusForm
+        return new Slideshow(metadata, 'slide', timeoutSec, focusId, focusForm);
     };
 
     this.startSlideshow = function () {
@@ -70,7 +71,7 @@ function Root() {
             skip.classList.remove('clicked');
             back.classList.remove('clicked');
             settings.classList.add('clicked');
-            this.focusForm.submit();
+            window.location = '/settings?focus=' + this.focus.value;
         });
     }
 }

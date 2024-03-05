@@ -43,11 +43,11 @@ class ImageList:
             return cls(*imgs)
 
     def return_slice(self, start, end):
-        if end < len(self.__list):
+        if end <= len(self.__list):
             new_list = list(self.__list[start:end])
         else:
             chunk_one = list(self.__list[start:])
-            end = len(self.__list) - end
+            end = end - len(self.__list)
             chunk_two = list(self.__list[:end])
             new_list = chunk_one + chunk_two
         return ImageList(*new_list)

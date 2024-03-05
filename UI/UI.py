@@ -11,30 +11,32 @@ class UI:
     img_list = None
     path_constants = None
     timeout_sec = 15
-    focus = None
 
     @staticmethod
     @app.route('/')
     def root():
+        if 'focus' in request.args:
+            focus = int(request.args['focus'])
+            UI.set_focus(focus)
         img_list = UI.img_list
         if not img_list.get_focus():
             img_list.random_focus()
         focus = img_list.get_focus()
-        img_list = img_list.return_slice(focus, focus + 5)
-        uris = list(img.gen_view_uri() for img in img_list)
-        orientations = img_list.get_orientations()
-        metadata = list((uris[i], orientations[i]) for i in range(len(img_list)))
+        display_list = img_list.return_slice(focus, focus + 5)
+        uris = list(img.gen_view_uri() for img in display_list)
+        orientations = display_list.get_orientations()
+        metadata = list((uris[i], orientations[i]) for i in range(len(display_list)))
         json_metadata = json.dumps(metadata)
         timeout_sec = UI.timeout_sec
         return render_template(
-            'root.html', metadata=json_metadata, timeout_sec=timeout_sec, focus=img_list.get_focus()
+            'root.html', metadata=json_metadata, timeout_sec=timeout_sec, focus=focus
         )
 
     @staticmethod
     @app.route('/settings')
     def settings():
         if 'focus' in request.args:
-            focus = request.args.get('focus')
+            focus = int(request.args.get('focus'))
             UI.img_list.set_focus(focus)
         timeout_sec = UI.timeout_sec
         return render_template('settings.html', timeout_sec=timeout_sec)
@@ -72,6 +74,14 @@ class UI:
     def set_timeout_sec(cls):
         os.chdir(cls.path_constants.get_static())
         pickle.dump(cls.timeout_sec, open('timeout.pickle', 'wb'))
+
+    @classmethod
+    def set_focus(cls, new_focus):
+        length = len(cls.img_list)
+        if new_focus >= length:
+            cls.img_list.set_focus(new_focus - length)
+        else:
+            cls.img_list.set_focus(new_focus)
 
 
 if __name__ == '__main__':
