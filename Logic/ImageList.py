@@ -46,7 +46,7 @@ class ImageList:
         if end <= len(self.__list):
             new_list = list(self.__list[start:end])
         else:
-            chunk_one = list(self.__list[start - 1:])
+            chunk_one = list(self.__list[start:])
             end = end - (len(self.__list) + 1)
             chunk_two = list(self.__list[:end])
             new_list = chunk_one + chunk_two

@@ -91,7 +91,7 @@ class UI:
         if new_focus < 0:
             new_focus += length
         if new_focus > length:
-            cls.img_list.set_focus(new_focus - (length + 1))
+            cls.img_list.set_focus(new_focus - length)
         else:
             cls.img_list.set_focus(new_focus)
 
