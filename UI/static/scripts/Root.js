@@ -4,7 +4,6 @@ function Root() {
     this.metadata = document.getElementById('metadata');
     this.timeoutSec = document.getElementById('timeout-sec');
     this.focus = document.getElementById('focus');
-    this.focusForm = document.getElementById('focus-form');
     this.img = document.getElementById('slide');
     this.controls = document.getElementsByClassName('control-panel');
     this.back = document.getElementById('back');
@@ -23,9 +22,9 @@ function Root() {
     this.setupSlideshow = function () {
         let metadata = JSON.parse(this.metadata.value);
         let timeoutSec = this.timeoutSec.value;
-        let focusId = this.focus.id;
-        let focusForm = this.focusForm
-        return new Slideshow(metadata, 'slide', timeoutSec, focusId, focusForm);
+        let focus = this.focus;
+        let focusVal = parseInt(this.focus.value);
+        return new Slideshow(metadata, 'slide', timeoutSec, focus, focusVal);
     };
 
     this.startSlideshow = function () {
@@ -33,7 +32,7 @@ function Root() {
     };
 
     this.dailyReset = function () {
-        window.location = '/';
+        window.location = '/?refresh';
     };
 
     this.showControls = function () {

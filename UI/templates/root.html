@@ -16,9 +16,9 @@
     <input id="timeout-sec" type="hidden" value="{{ timeout_sec }}">
     <input id="focus" name="focus" type="hidden" value="{{ focus }}">
     <img id="slide" src="">
-    <div class="control-panel arrow" id="skip"> > </div>
-    <div class="control-panel arrow" id="back"> < </div>
-    <div class="control-panel" id="settings">Settings</div>
+    <div style="display: {{ controller_vis }}" class="control-panel arrow" id="skip"> > </div>
+    <div style="display: {{ controller_vis }}" class="control-panel arrow" id="back"> < </div>
+    <div style="display: {{ controller_vis }}" class="control-panel" id="settings">Settings</div>
 {% endblock %}
 </body>
 </html>

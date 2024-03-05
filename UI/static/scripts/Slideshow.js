@@ -1,10 +1,10 @@
-function Slideshow(metadata, imgId, timeoutSec, focusId, focusForm) {
+function Slideshow(metadata, imgId, timeoutSec, focus, focusVal) {
     this.metadata = metadata;
     this.length = this.metadata.length;
     this.imgId = imgId;
     this.timeout = timeoutSec * 1000;
-    this.focusId = focusId;
-    this.focusForm = focusForm;
+    this.focus = focus;
+    this.focusVal = focusVal;
     this.index = 0;
     this.intervalID = null;
 
@@ -24,6 +24,7 @@ function Slideshow(metadata, imgId, timeoutSec, focusId, focusForm) {
         if (this.index  === this.length) {
             this.to_root();
         }
+        this.focus.value = this.focusVal + this.index;
         this.show_slide();
     };
 
@@ -35,8 +36,9 @@ function Slideshow(metadata, imgId, timeoutSec, focusId, focusForm) {
         this.stop();
         this.index += 1;
         if (this.index === this.length) {
-            this.to_root();
+            this.to_root(true);
         }
+        this.focus.value = this.focusVal + this.index;
         this.play();
         console.log('Skip');
     };
@@ -45,18 +47,21 @@ function Slideshow(metadata, imgId, timeoutSec, focusId, focusForm) {
         this.stop();
         this.index -= 1;
         if (this.index < 0) {
-            this.to_root();
+            this.to_root(true);
         }
+        this.focus.value = this.focusVal + this.index;
         this.play();
         console.log('Back');
     };
 
-    this.to_root = function() {
-        let focus = document.getElementById(this.focusId);
-        let focusVal = parseInt(focus.value);
-        focusVal += this.index;
-        focus.value = focusVal;
-        window.location = '/?focus=' + focusVal.toString();
+    this.to_root = function(skip) {
+        this.stop();
+        this.focus.value = this.focusVal + this.index;
+        let uri = '/?focus=' + this.focus.value;
+        if (skip) {
+            uri += '&skip';
+        }
+        window.location = uri;
     };
 
     this.init = function () {

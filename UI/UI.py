@@ -15,12 +15,18 @@ class UI:
     @staticmethod
     @app.route('/')
     def root():
+        controller_vis = 'none'
         if 'focus' in request.args:
             focus = int(request.args['focus'])
             UI.set_focus(focus)
+        if 'skip' in request.args:
+            controller_vis = 'flex'
+        if 'refresh' in request.args:
+            UI.init_imgs()
         img_list = UI.img_list
-        if not img_list.get_focus():
-            img_list.random_focus()
+        if img_list.get_focus() is None:
+            # img_list.random_focus() # may be unnecessarily resource-hungry, checking equality for each list item
+            img_list.set_focus(3)
         focus = img_list.get_focus()
         display_list = img_list.return_slice(focus, focus + 5)
         uris = list(img.gen_view_uri() for img in display_list)
@@ -29,7 +35,11 @@ class UI:
         json_metadata = json.dumps(metadata)
         timeout_sec = UI.timeout_sec
         return render_template(
-            'root.html', metadata=json_metadata, timeout_sec=timeout_sec, focus=focus
+            'root.html',
+            metadata=json_metadata,
+            timeout_sec=timeout_sec,
+            focus=focus,
+            controller_vis=controller_vis
         )
 
     @staticmethod
@@ -78,8 +88,10 @@ class UI:
     @classmethod
     def set_focus(cls, new_focus):
         length = len(cls.img_list)
-        if new_focus >= length:
-            cls.img_list.set_focus(new_focus - length)
+        if new_focus < 0:
+            new_focus += length
+        if new_focus > length:
+            cls.img_list.set_focus(new_focus - (length + 1))
         else:
             cls.img_list.set_focus(new_focus)
 
