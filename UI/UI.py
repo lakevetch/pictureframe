@@ -53,10 +53,13 @@ class UI:
     @staticmethod
     @app.route('/settings-confirm', methods=['POST'])
     def settings_confirm():
+        uri = '/'
         if 'timeout-sec' in request.form and request.form['timeout-sec']:
             UI.timeout_sec = int(request.form['timeout-sec'])
             UI.set_timeout_sec()
-        return redirect('/')
+        if 'refresh' in request.form and request.form['refresh']:
+            uri += '?refresh'
+        return redirect(uri)
 
     @classmethod
     def init_imgs(cls):

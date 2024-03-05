@@ -51,9 +51,20 @@ img {
     border-radius: 15px;
 }
 .setting-page {
+    font-size: 3em;
     display: inline-block;
     margin: auto;
     color: white;
     align-items: center;
     justify-content: center;
+}
+.setting-page input {
+    height: 3em;
+    width: auto;
+}
+.setting-page ul {
+    list-style: none;
+}
+.setting-page li {
+    margin: 5px;
 }

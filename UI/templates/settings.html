@@ -6,10 +6,20 @@
         <h1>Settings</h1>
         <h3>Currently changing slide after: {{ timeout_sec }}</h3>
         <form action="/settings-confirm" method="POST">
-            <label>
-                Set slide-change time to:
-                <input type="number" id="timeout-sec" name="timeout-sec">
-            </label>
+            <ul>
+                <li>
+                    <label>
+                        Set slide-change time to:
+                        <input type="number" id="timeout-sec" name="timeout-sec">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        Refresh image list (could take some time)
+                        <input type="checkbox" id="refresh" name="refresh">
+                    </label>
+                </li>
+            </ul>
             <button type="submit">DONE</button>
         </form>
     </div>
