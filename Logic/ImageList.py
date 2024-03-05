@@ -42,6 +42,16 @@ class ImageList:
                 imgs.append(GoogleImage(*t))
             return cls(*imgs)
 
+    def return_slice(self, start, end):
+        if end < len(self.__list):
+            new_list = list(self.__list[start:end])
+        else:
+            chunk_one = list(self.__list[start:])
+            end = len(self.__list) - end
+            chunk_two = list(self.__list[:end])
+            new_list = chunk_one + chunk_two
+        return ImageList(*new_list)
+
     # make iterable
     def __iter__(self):
         return self
@@ -114,4 +124,9 @@ class ImageList:
 if __name__ == '__main__':
     img_list = ImageList.fetch_jpegs()
     img_list.random_focus()
-    print(img_list.get_focus())
+    for img in img_list:
+        print(img.get_name())
+    print()
+    img_list = img_list.return_slice(0, 10)
+    for img in img_list:
+        print(img.get_name())

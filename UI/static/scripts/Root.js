@@ -78,6 +78,7 @@ function Root() {
 window.addEventListener('load', () => {
     console.log('hello world');
     let root = new Root();
+    console.log(root);
     root.init();
     console.log('init complete');
 });

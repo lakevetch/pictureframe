@@ -53,8 +53,9 @@ function Slideshow(metadata, imgId, timeoutSec, focusId) {
     }
 
     this.init = function () {
-        let focus = document.getElementById(this.focusId);
-        this.index = parseInt(focus.value);
+        // let focus = document.getElementById(this.focusId);
+        // this.index = parseInt(focus.value);
+        console.log(this);
         this.play();
     };
 }
