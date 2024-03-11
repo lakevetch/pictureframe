@@ -11,7 +11,7 @@ class Project:
     def __init__(self, root_pathname=os.getcwd()):
         self.__ROOT_PATH = Path(root_pathname)
         self.__STATIC_PATH = self.__ROOT_PATH / 'static'
-        self.__OAUTH_PATH = self.__STATIC_PATH / 'credentials.json'
+        self.__OAUTH_PATH = self.__ROOT_PATH / 'credentials.json'
         self.__IMG_PASSTHRU_PATH = self.__STATIC_PATH / 'img_passthru'
 
     def get_root(self):

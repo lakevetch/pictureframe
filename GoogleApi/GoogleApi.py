@@ -1,7 +1,7 @@
 import pickle
 import os
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+import google_auth_oauthlib.flow as flow
 from google.auth.transport.requests import Request
 from Logic.Project import Project
 
@@ -55,9 +55,9 @@ class GoogleApi:
 
     @classmethod
     def signin_flow(cls):
-        flow = InstalledAppFlow.from_client_secrets_file(
+        signin_flow = flow.from_client_secrets_file(
             cls.__path_constants.get_oauth(), SCOPES)
-        creds = flow.run_local_server(port=0)
+        creds = signin_flow.run_local_server(port=0)
         return creds
 
     @classmethod
