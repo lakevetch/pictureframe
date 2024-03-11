@@ -99,19 +99,13 @@ class UI:
 
 # run
     @classmethod
-    def run(cls):
-        cls.path_constants = Project.update_root('')
-        cls.load_timeout_sec()
-        cls.init_imgs()
-        cls.app.run()
-
-    @classmethod
     def create_app(cls):
-        cls.path_constants = Project.update_root('')
+        cls.path_constants = Project
+        cls.path_constants.update_root('')
         cls.load_timeout_sec()
         cls.init_imgs()
         return cls.app
 
 
 if __name__ == '__main__':
-    UI.run()
+    pass
