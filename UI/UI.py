@@ -107,7 +107,7 @@ class UI:
 
     @classmethod
     def return_app(cls):
-        cls.path_constants = Project()
+        cls.path_constants = Project('')
         cls.load_timeout_sec()
         cls.init_imgs()
         return cls.app
