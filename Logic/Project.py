@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -7,7 +8,7 @@ class Project:
     __OAUTH_PATH = None
     __IMG_PASSTHRU_PATH = None
 
-    def __init__(self, root_pathname='C:/Users/Jack/Desktop/pythonsketchbook/pictureframe/pictureframe'):
+    def __init__(self, root_pathname=os.getcwd()):
         self.__ROOT_PATH = Path(root_pathname)
         self.__STATIC_PATH = self.__ROOT_PATH / 'static'
         self.__OAUTH_PATH = self.__STATIC_PATH / 'credentials.json'
