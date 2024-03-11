@@ -4,19 +4,23 @@
 {% block content %}
     <div class="setting-page">
         <h1>Settings</h1>
-        <h3>Currently changing slide after: {{ timeout_sec }}</h3>
+        <h3>Currently changing slide after: {{ timeout_sec }} seconds</h3>
         <form action="/settings-confirm" method="POST">
             <ul>
                 <li>
                     <label>
                         Set slide-change time to:
-                        <input type="number" id="timeout-sec" name="timeout-sec">
+                        <select id="timeout-sec" name="timeout-sec">
+                            {% for i in range(4, 33, 4) %}
+                                <option value="{{ i }}" {% if i == timeout_sec %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
                     </label>
                 </li>
                 <li>
                     <label>
-                        Refresh image list (could take some time)
-                        <input type="checkbox" id="refresh" name="refresh">
+                        Refresh image list? (check box for yes):
+                        <input class="checkbox" type="checkbox" id="refresh" name="refresh">
                     </label>
                 </li>
             </ul>

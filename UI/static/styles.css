@@ -62,9 +62,19 @@ img {
     height: 3em;
     width: auto;
 }
+.setting-page select {
+    font-size: 1em;
+}
+.setting-page button {
+    font-size: 1.5em;
+    margin: 1em auto 1em auto;
+}
 .setting-page ul {
     list-style: none;
 }
 .setting-page li {
-    margin: 5px;
+    margin: 1em auto 1em auto;
+}
+.checkbox {
+    transform: scale(3)
 }

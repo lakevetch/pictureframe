@@ -12,17 +12,11 @@ class UI:
     path_constants = None
     timeout_sec = 15
 
+# view methods
     @staticmethod
     @app.route('/')
     def root():
-        controller_vis = 'none'
-        if 'focus' in request.args:
-            focus = int(request.args['focus'])
-            UI.set_focus(focus)
-        if 'skip' in request.args:
-            controller_vis = 'flex'
-        if 'refresh' in request.args:
-            UI.init_imgs()
+        controller_vis = UI.parse_args(request.args)
         img_list = UI.img_list
         if img_list.get_focus() is None:
             img_list.random_focus()
@@ -61,6 +55,7 @@ class UI:
             uri += '?refresh'
         return redirect(uri)
 
+# utils
     @classmethod
     def init_imgs(cls):
         non_jpegs = ImageList.fetch_non_jpegs()
@@ -70,17 +65,22 @@ class UI:
         return cls.img_list
 
     @classmethod
-    def run(cls):
-        cls.path_constants = Project()
-        cls.load_timeout_sec()
-        cls.init_imgs()
-        cls.app.run()
-
-    @classmethod
     def load_timeout_sec(cls):
         os.chdir(cls.path_constants.get_static())
         if os.path.exists('timeout.pickle'):
             cls.timeout_sec = pickle.load(open('timeout.pickle', 'rb'))
+
+    @classmethod
+    def parse_args(cls, args):
+        controller_vis = 'none'
+        if 'focus' in request.args:
+            focus = int(request.args['focus'])
+            cls.set_focus(focus)
+        if 'skip' in request.args:
+            controller_vis = 'flex'
+        if 'refresh' in request.args:
+            cls.init_imgs()
+        return controller_vis
 
     @classmethod
     def set_timeout_sec(cls):
@@ -96,6 +96,14 @@ class UI:
             cls.img_list.set_focus(new_focus - length)
         else:
             cls.img_list.set_focus(new_focus)
+
+# run
+    @classmethod
+    def run(cls):
+        cls.path_constants = Project()
+        cls.load_timeout_sec()
+        cls.init_imgs()
+        cls.app.run()
 
 
 if __name__ == '__main__':

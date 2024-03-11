@@ -106,6 +106,14 @@ class GoogleImage:
     def __eq__(self, other):
         return self.__hash_code == other.__hash_code
 
+    def conversion_flow(self): # this could likely be made more efficient
+        from Logic.ImageList import ImageList
+        self.convert_to_jpg()
+        if self.__name not in tuple(img.get_name() for img in ImageList.fetch_jpegs()):
+            self.upload()
+        self.delete_locally()
+        self.delete_from_drive()
+
     def convert_to_jpg(self):
         if self.__mime_type != 'image/jpeg':
             register_heif_opener()
@@ -123,6 +131,13 @@ class GoogleImage:
             self.__name = new_name
             self.__mime_type = 'image/jpeg'
 
+    def delete_from_drive(self):
+        GoogleApi.delete_img(self.__id)
+
+    def delete_locally(self):
+        os.chdir(self.__path_const.get_img_passthru())
+        os.remove(self.__name)
+
     def download(self):
         register_heif_opener()
         os.chdir(self.__path_const.get_img_passthru())
@@ -132,25 +147,8 @@ class GoogleImage:
             file.write(r.content)
             self.__img = Image.open(self.__name)
 
-    def delete_from_drive(self):
-        GoogleApi.delete_img(self.__id)
-
-    def delete_locally(self):
-        os.chdir(self.__path_const.get_img_passthru())
-        os.remove(self.__name)
-
-    def upload(self):
-        if self.__img:
-            uploadable = MediaFileUpload(os.path.join(self.__path_const.get_img_passthru(), self.__name))
-            GoogleApi.upload_img(uploadable, {'name': self.__name})
-
-    def conversion_flow(self):
-        from Logic.ImageList import ImageList
-        self.convert_to_jpg()
-        if self.__name not in tuple(img.get_name() for img in ImageList.fetch_jpegs()):
-            self.upload()
-        self.delete_locally()
-        self.delete_from_drive()
+    def gen_view_uri(self):
+        return f'https://lh3.google.com/u/0/d/{self.__id}'
 
     def to_dict(self):
         return {
@@ -159,8 +157,10 @@ class GoogleImage:
             'mimeType': self.__mime_type
         }
 
-    def gen_view_uri(self):
-        return f'https://lh3.google.com/u/0/d/{self.__id}'
+    def upload(self):
+        if self.__img:
+            uploadable = MediaFileUpload(os.path.join(self.__path_const.get_img_passthru(), self.__name))
+            GoogleApi.upload_img(uploadable, {'name': self.__name})
 
 
 if __name__ == '__main__':
