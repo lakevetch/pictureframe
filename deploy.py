@@ -2,4 +2,4 @@ from UI.UI import UI
 
 
 def create_app():
-    return UI.app
+    return UI.create_app()
