@@ -13,22 +13,14 @@ class Project:
         self.__OAUTH_PATH = self.__STATIC_PATH / 'credentials.json'
         self.__IMG_PASSTHRU_PATH = self.__STATIC_PATH / 'img_passthru'
 
-    @classmethod
-    def update_root(cls, root_pathname=''):
-        cls.__ROOT_PATH = root_pathname
-
-    @classmethod
     def get_root(self):
         return self.__ROOT_PATH
 
-    @classmethod
     def get_static(self):
         return self.__STATIC_PATH
 
-    @classmethod
     def get_oauth(self):
         return self.__OAUTH_PATH
 
-    @classmethod
     def get_img_passthru(self):
         return self.__IMG_PASSTHRU_PATH
