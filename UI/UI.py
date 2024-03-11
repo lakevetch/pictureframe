@@ -100,8 +100,7 @@ class UI:
 # run
     @classmethod
     def create_app(cls):
-        cls.path_constants = Project
-        cls.path_constants.update_root('')
+        cls.path_constants = Project('')
         cls.load_timeout_sec()
         cls.init_imgs()
         return cls.app
