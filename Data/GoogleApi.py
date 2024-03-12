@@ -34,7 +34,7 @@ class GoogleApi:
 
     @classmethod
     def load_key(cls):
-        creds = google.auth.load_credentials_from_file('credentials.json', scopes=SCOPES)
+        creds = google.auth.load_credentials_from_file('credentials.json', scopes=SCOPES)[0]
         return creds
 
     # @classmethod
@@ -140,4 +140,4 @@ class GoogleApi:
 
 
 if __name__ == '__main__':
-    pass
+    print(GoogleApi.load_key())
