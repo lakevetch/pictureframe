@@ -1,5 +1,5 @@
 import os
-from GoogleApi.GoogleApi import GoogleApi
+from Data.GoogleApi import GoogleApi
 import requests
 from PIL import Image
 from pillow_heif import register_heif_opener
@@ -135,12 +135,12 @@ class GoogleImage:
         GoogleApi.delete_img(self.__id)
 
     def delete_locally(self):
-        os.chdir(self.__path_const.get_img_passthru())
+        # os.chdir(self.__path_const.get_img_passthru())
         os.remove(self.__name)
 
     def download(self):
         register_heif_opener()
-        os.chdir(self.__path_const.get_img_passthru())
+        # os.chdir(self.__path_const.get_img_passthru())
         r = requests.get(self.__download_uri)
         if r:
             file = open(self.__name, 'wb')
@@ -159,7 +159,8 @@ class GoogleImage:
 
     def upload(self):
         if self.__img:
-            uploadable = MediaFileUpload(os.path.join(self.__path_const.get_img_passthru(), self.__name))
+            # uploadable = MediaFileUpload(os.path.join(self.__path_const.get_img_passthru(), self.__name))
+            uploadable = MediaFileUpload(self.__name)
             GoogleApi.upload_img(uploadable, {'name': self.__name})
 
 

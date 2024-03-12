@@ -1,4 +1,4 @@
-from GoogleApi.GoogleApi import GoogleApi
+from Data.GoogleApi import GoogleApi
 from Logic.GoogleImage import GoogleImage
 import json
 import random

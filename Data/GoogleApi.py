@@ -1,7 +1,7 @@
 import pickle
 import os
 from googleapiclient.discovery import build
-import google_auth_oauthlib.flow as flow
+from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from Logic.Project import Project
 
@@ -20,8 +20,8 @@ class GoogleApi:
 
     @classmethod
     def connect(cls):
-        if not cls.__path_constants:
-            cls.__path_constants = Project()
+        # if not cls.__path_constants:
+        #     cls.__path_constants = Project()
         if not cls.__service:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()
@@ -33,7 +33,7 @@ class GoogleApi:
         # The file token.pickle stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        os.chdir(cls.__path_constants.get_static())
+        # os.chdir(cls.__path_constants.get_static())
         if os.path.exists('token.pickle'):
             with open('token.pickle', 'rb') as token:
                 creds = pickle.load(token)
@@ -55,8 +55,8 @@ class GoogleApi:
 
     @classmethod
     def signin_flow(cls):
-        signin_flow = flow.from_client_secrets_file(
-            cls.__path_constants.get_oauth(), SCOPES)
+        signin_flow = InstalledAppFlow.from_client_secrets_file(
+            'credentials.json', SCOPES)
         creds = signin_flow.run_local_server(port=0)
         return creds
 
