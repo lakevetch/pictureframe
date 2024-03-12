@@ -3,6 +3,8 @@ import os
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth import default
+import google_auth_oauthlib
+import google.auth
 from google.auth.transport.requests import Request
 from Logic.Project import Project
 import json
@@ -29,6 +31,11 @@ class GoogleApi:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()
             cls.__files = cls.__service.files()
+
+    @classmethod
+    def load_key(cls):
+        creds = google.auth.load_credentials_from_file('credentials.json', scopes=SCOPES)
+        return creds
 
     # @classmethod
     # def get_gdrive_service(cls):
@@ -58,7 +65,7 @@ class GoogleApi:
 
     @classmethod
     def get_gdrive_service(cls):
-        credentials = default(SCOPES)
+        credentials = cls.load_key()
         return build('drive', 'v3', credentials=credentials)
 
     @classmethod
