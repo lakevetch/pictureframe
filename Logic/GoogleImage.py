@@ -3,7 +3,6 @@ from Data.GoogleApi import GoogleApi
 import requests
 from PIL import Image
 from pillow_heif import register_heif_opener
-from Logic.Project import Project
 from googleapiclient.http import MediaFileUpload
 
 
@@ -32,7 +31,6 @@ class GoogleImage:
         else:
             self.__orientation = 'portrait'
         self.__hash_code = hash_code
-        self.__path_const = Project('C:/Users/Jack/Desktop/pythonsketchbook/pictureframe')
 
     @classmethod
     def fetch_by_id(cls, drive_id):

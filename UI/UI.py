@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect
 from Logic.ImageList import ImageList
-from Logic.Project import Project
 import json
 import os
 import pickle
@@ -66,7 +65,6 @@ class UI:
 
     @classmethod
     def load_timeout_sec(cls):
-        # os.chdir(cls.path_constants.get_static())
         if os.path.exists('timeout.pickle'):
             cls.timeout_sec = pickle.load(open('timeout.pickle', 'rb'))
 
@@ -84,7 +82,6 @@ class UI:
 
     @classmethod
     def set_timeout_sec(cls):
-        # os.chdir(cls.path_constants.get_static())
         pickle.dump(cls.timeout_sec, open('timeout.pickle', 'wb'))
 
     @classmethod
@@ -100,7 +97,6 @@ class UI:
 # run
     @classmethod
     def create_app(cls):
-        # cls.path_constants = Project()
         cls.load_timeout_sec()
         cls.init_imgs()
         return cls.app

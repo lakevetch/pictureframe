@@ -1,18 +1,10 @@
-import pickle
-import os
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth import default
-import google_auth_oauthlib
 import google.auth
-from google.auth.transport.requests import Request
-from Logic.Project import Project
-import json
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive']
 FOLDER_ID = '1hPJkFLpcrqhrUCnWrYW7JbAvaQ-HZd23'
-KEY = 'd564a58bd6d192896a2ec17f678a50285d7a0ac5	'
 
 
 class GoogleApi:
@@ -25,8 +17,6 @@ class GoogleApi:
 
     @classmethod
     def connect(cls):
-        # if not cls.__path_constants:
-        #     cls.__path_constants = Project()
         if not cls.__service:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()
@@ -34,46 +24,13 @@ class GoogleApi:
 
     @classmethod
     def load_key(cls):
-        creds = google.auth.load_credentials_from_file('credentials.json', scopes=SCOPES)[0]
+        creds = google.auth.load_credentials_from_file('../credentials.json', scopes=SCOPES)[0]
         return creds
-
-    # @classmethod
-    # def get_gdrive_service(cls):
-    #     creds = None
-    #     # The file token.pickle stores the user's access and refresh tokens, and is
-    #     # created automatically when the authorization flow completes for the first
-    #     # time.
-    #     # os.chdir(cls.__path_constants.get_static())
-    #     if os.path.exists('token.pickle'):
-    #         with open('token.pickle', 'rb') as token:
-    #             creds = pickle.load(token)
-    #     # If there are no (valid) credentials available, let the user log in.
-    #     if not creds or not creds.valid:
-    #         if creds and creds.expired and creds.refresh_token:
-    #             # try:
-    #             creds.refresh(Request())
-    #             # except:
-    #             #     os.remove('token.pickle')
-    #             #     creds = cls.signin_flow()
-    #         else:
-    #             creds = cls.signin_flow()
-    #         # Save the credentials for the next run
-    #         with open('token.pickle', 'wb') as token:
-    #             pickle.dump(creds, token)
-    #     # return Google Drive API service
-    #     return build('drive', 'v3', credentials=creds)
 
     @classmethod
     def get_gdrive_service(cls):
         credentials = cls.load_key()
         return build('drive', 'v3', credentials=credentials)
-
-    @classmethod
-    def signin_flow(cls):
-        signin_flow = InstalledAppFlow.from_client_secrets_file(
-            'credentials.json', SCOPES)
-        creds = signin_flow.run_local_server(port=0)
-        return creds
 
     @classmethod
     def list_files(cls, query_str='', fields=None):
