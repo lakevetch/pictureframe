@@ -2,6 +2,7 @@ import pickle
 import os
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth import default
 from google.auth.transport.requests import Request
 from Logic.Project import Project
 import json
@@ -57,7 +58,8 @@ class GoogleApi:
 
     @classmethod
     def get_gdrive_service(cls):
-        return build('drive', 'v3', developerKey=KEY)
+        credentials = default(SCOPES)
+        return build('drive', 'v3', credentials=credentials)
 
     @classmethod
     def signin_flow(cls):
