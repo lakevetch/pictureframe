@@ -9,6 +9,7 @@ import json
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/drive']
 FOLDER_ID = '1hPJkFLpcrqhrUCnWrYW7JbAvaQ-HZd23'
+KEY = 'd564a58bd6d192896a2ec17f678a50285d7a0ac5	'
 
 
 class GoogleApi:
@@ -27,13 +28,6 @@ class GoogleApi:
             cls.__service = cls.get_gdrive_service()
             cls.__drive = cls.__service.drives()
             cls.__files = cls.__service.files()
-
-    @classmethod
-    def load_key(cls):
-        if os.path.exists("credentials.json"):
-            creds = json.load(open("credentials.json"))
-            key = creds['private_key'].split('\n')[1]
-            return key
 
     # @classmethod
     # def get_gdrive_service(cls):
@@ -63,8 +57,7 @@ class GoogleApi:
 
     @classmethod
     def get_gdrive_service(cls):
-        key = cls.load_key()
-        return build('drive', 'v3', developerKey=key)
+        return build('drive', 'v3', developerKey=KEY)
 
     @classmethod
     def signin_flow(cls):
