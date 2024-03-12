@@ -32,7 +32,7 @@ class GoogleApi:
     def load_key(cls):
         if os.path.exists("credentials.json"):
             creds = json.load(open("credentials.json"))
-            key = creds['private_key']
+            key = creds['private_key'].split('\n')[1]
             return key
 
     # @classmethod
