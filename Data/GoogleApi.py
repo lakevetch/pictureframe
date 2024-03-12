@@ -24,7 +24,7 @@ class GoogleApi:
 
     @classmethod
     def load_key(cls):
-        creds = google.auth.load_credentials_from_file('../credentials.json', scopes=SCOPES)[0]
+        creds = google.auth.load_credentials_from_file('credentials.json', scopes=SCOPES)[0]
         return creds
 
     @classmethod
