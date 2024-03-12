@@ -112,7 +112,7 @@ class GoogleImage:
         if self.__name not in tuple(img.get_name() for img in ImageList.fetch_jpegs()):
             self.upload()
         self.delete_locally()
-        self.delete_from_drive()
+        # self.delete_from_drive()
 
     def convert_to_jpg(self):
         if self.__mime_type != 'image/jpeg':
